@@ -1,0 +1,24 @@
+{
+  "name": "topcoder-hackathon-episode3",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/johanjordaan/topcoder-hackathon-episode3.git"
+  },
+  "author": "Johan Jordaan",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/johanjordaan/topcoder-hackathon-episode3/issues"
+  },
+  "homepage": "https://github.com/johanjordaan/topcoder-hackathon-episode3#readme",
+  "dependencies": {
+    "body-parser": "^1.14.1",
+    "express": "^4.13.3",
+    "morgan": "^1.6.1"
+  }
+}
