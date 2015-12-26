@@ -11,7 +11,7 @@ This is the spec for the app:
 This is the spec for the batch process:
 * In cron job call the update to get the top 9 videos
 * Use giflayer to get a gif for the video if it's not avaialble
-* For each day just create a new directory
+* Download files into
 
 ## Tech stack
 This is the tech stack used to create this entry:
@@ -20,3 +20,9 @@ This is the tech stack used to create this entry:
 
 * youtube api
 * giflayer api
+
+## TODO
+* Add google analytics
+* Deploy to somewhere : yougif.abicat.com
+* Error handling. Right now there is almost no error handling.
+* Some kind of waiting to load image.

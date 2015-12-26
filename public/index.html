@@ -1,6 +1,6 @@
 <!doctype html>
 
-<html ng-app="scotchTodo">
+<html ng-app="app">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -21,16 +21,12 @@
             <h1>topcoder-hackathon-episode3<span class="label label-info">??</span></h1>
         </div>
 
-        <div id="todo-form" class="row">
-            <div class="col-sm-8 col-sm-offset-2 text-center">
-                <form>
-                    <div class="form-group">
-                        <input type="text" class="form-control input-lg text-center" placeholder="Your wish is my command ..." ng-model="searchString">
-                    </div>
-                    <button type="submit" class="btn btn-primary btn-lg" ng-click="search()">Search</button>
-                </form>
-            </div>
+        <div ng-repeat="row in rows" class="row">
+           <div ng-repeat="item in row" class="col-sm-4">
+             <img ng-src="{{item.src}}"/>
+           </div>
         </div>
+
 
     </div>
 
