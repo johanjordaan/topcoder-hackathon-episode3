@@ -36,8 +36,12 @@
         </div>
 
         <div ng-repeat="row in rows" class="row">
-           <div ng-repeat="item in row" class="col-sm-4">
+           <div class="col-sm-1">
+           </div>
+           <div ng-repeat="item in row" class="col-sm-3">
              <img class="img-thumbnail" ng-src="{{item.src}}"/>
+           </div>
+           <div class="col-sm-1">
            </div>
         </div>
 

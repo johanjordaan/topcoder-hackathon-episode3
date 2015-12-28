@@ -26,3 +26,7 @@ This is the tech stack used to create this entry:
 * Deploy to somewhere : yougif.abicat.com
 * Error handling. Right now there is almost no error handling.
 * Some kind of waiting to load image.
+
+
+## Notes
+* new Date(publishedAfterDate.getDate! +1) - Obscure error in livescript it should be + 1 not +1...

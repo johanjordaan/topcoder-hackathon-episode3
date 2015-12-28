@@ -14,3 +14,9 @@ body {
    margin-left: 10px;
    margin-right: 10px;
 }
+
+.row {
+   padding-left: 120px;
+   padding-top: 40px;;
+   margin-top: 40px;
+}

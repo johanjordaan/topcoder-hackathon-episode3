@@ -23,18 +23,27 @@ app.use logger 'dev'
 app.use bodyParser.json!
 app.use bodyParser.urlencoded {extended:true}
 
-checkIfUpdateAlreadyRun = (publishedAfter) ->
-   new Promise (resolve, reject) ->
-      console.log 'xxx'
-      resolve!
+# Input in YYYYMMDD
+#
+fromYYYYMMDD = (dateString) ->
+   if !dateString?
+      c = new Date!
+      dateString = "#{c.getFullYear!}#{c.getMonth! - 1}#{c.getDate!}"
 
-createFs = ->
-   new Promise (resolve, reject) ->
-      fs.mkdir 'public/data', (err) ->
-         if !err || err.code == 'EEXIST'
-            resolve!
-         else
-            reject err
+   date = new Date(
+      Number(dateString.substring(0,4)),
+      Number(dateString.substring(4,6))-1,
+      Number(dateString.substring(6,8))
+   )
+
+toYYYYMMDD = (date) ->
+   date.toISOString().slice(0,10).replace(/-/g,"");
+
+# Hack to get ISO strings into the 3339 format
+#
+ISO3339 = (date) ->
+   # ISO 3339 conversion
+   date = date.toISOString!.replace(/....Z$/,'Z')
 
 callYouTube = (publishedAfter) ->
    youTube = new YouTube!
@@ -44,22 +53,16 @@ callYouTube = (publishedAfter) ->
    youTube.addParam 'publishedAfter', publishedAfter
 
    new Promise (resolve, reject) ->
-      youTube.search '', 9, (err, result) ->
-         if err
-            console.log err
-            reject err
-         else
-            result.items
-               |> _.map (item) ->
-                  console.log item.id.videoId
-                  do
-                     id: item.id.videoId
-                     title: item.snippet.title
-                     description: item.snippet.descriptionn
-               |> resolve
 
 
-
+buildYTRequest = (publishedAfterDate,publishedBeforeDate) ->
+   youTube = new YouTube!
+   youTube.setKey youtubeKey
+   youTube.addParam 'order', 'viewCount'
+   youTube.addParam 'type', 'video'
+   youTube.addParam 'publishedAfter', (publishedAfterDate |> ISO3339) |> JSON.stringify
+   youTube.addParam 'publishedBefore', (publishedBeforeDate |> ISO3339) |> JSON.stringify
+   youTube
 
 buildGLRequest = (id) ->
    url="https://www.youtube.com/watch?v=#{id}"
@@ -72,33 +75,62 @@ buildGLRequest = (id) ->
    start_parm = "start=#{start}"
    duration_parm = "duration=#{duration}"
    size_param = "size=#{size}"
-   glRequest = "#{base}&#{url_parm}&#{start_parm}&#{duration_parm}"
+   glRequest = "#{base}&#{url_parm}&#{start_parm}&#{duration_parm}&#{size_param}"
 
-app.post '/api/update/:date', (req, res) ->
-   console.log req.params.date
 
-   currentDate = new Date!
-   publishedAfter = new Date(null)
-   publishedAfter.setYear currentDate.getFullYear!
-   publishedAfter.setMonth currentDate.getMonth!
-   publishedAfter.setDate currentDate.getDate! - 2
-   # ISO 3339 conversion
-   publishedAfterStr = publishedAfter.toISOString!.replace(/....Z$/,'Z')
+update = (res, publishedAfterDate) ->
+   publishedBeforeDate = new Date(publishedAfterDate)
+   publishedBeforeDate.setDate publishedBeforeDate.getDate! + 1
 
-   checkIfUpdateAlreadyRun!.then ->
-      createFs!.then ->
-         callYouTube(publishedAfterStr).then (items) ->
-            fs.write "./public/"
-            items |> _.each (item) ->
+   console.log "Updating [#{publishedAfterDate}] -> [#{publishedBeforeDate}]"
+
+   youTube = buildYTRequest publishedAfterDate, publishedBeforeDate
+   dateStr = publishedBeforeDate |> toYYYYMMDD
+
+   youTube.search '', 9, (err, result) ->
+      if err
+         console.log err
+         res.send "{'error':#{err}}"
+      else
+         items = result.items
+            |> _.map (item) ->
+               console.log item.id.videoId
+               do
+                  id: item.id.videoId
+                  title: item.snippet.title
+                  description: item.snippet.descriptionn
+            |> _.each (item) ->
                path = "./public/data/#{item.id}.gif"
                fs.exists path, (exists) ->
-                  console.log exists,path
-                  if !exists
-                     #console.log "Giflayer get image [#{glRequest}]"
-                     request(buildGLRequest(item.id))
-                        .pipe(fs.createWriteStream(path))
-            res.send ""
+                  if exists
+                     console.log "Skipping [#{path}], it exists"
+                  else
+                     glRequest = buildGLRequest(item.id)
+                     console.log "Generating [#{path}] using Giflayer [#{glRequest}]"
+                     request glRequest
+                     .on 'response', (response) ->
+                        console.log response.body
+                     .on 'error', (err) ->
+                        console.log err
+                     .pipe fs.createWriteStream(path)
 
+         fs.writeFile "./public/data/#{dateStr}.json", JSON.stringify(items), "UTF-8" (err) ->
+            if err?
+               console.log err
+               res.send "{'error':#{err}}"
+            #else
+            #   res.send ""
+
+app.post '/api/update/:date', (req, res) ->
+   publishedAfterDate = fromYYYYMMDD req.params.date
+   update res, publishedAfterDate
+
+app.post '/api/update', (req, res) ->
+   publishedAfterDate = fromYYYYMMDD!
+   update res, publishedAfterDate
+
+# Load the data for a specific date
+#
 app.get '/api/load/:date', (req, res) ->
    fs.readFile "public/data/#{req.params.date}.json","UTF-8", (err, text) ->
       if err?
@@ -106,6 +138,8 @@ app.get '/api/load/:date', (req, res) ->
       else
          res.send text
 
+# Get the list of dates for wich we have data
+#
 app.get '/api/list_dates', (req, res) ->
    glob 'public/data/*.json', (err, files) ->
       if err?
@@ -117,11 +151,21 @@ app.get '/api/list_dates', (req, res) ->
             |> _.sort
             |> res.send
 
+# Create the required directories if they don't exist
+#
+fs.mkdir 'public/data', (err) ->
+   if err && err.code == 'EEXIST'
+      console.log "pub/data exists already"
+   else if !err
+      console.log "created pub/data"
+   else
+      console.log err
+
+
 server = app.listen 3000, ->
-  host = server.address!.address
-  port = server.address!.port
+   host = server.address!.address
+   port = server.address!.port
 
-
-  console.log "Example app listening at http://#{host}:#{port}"
-  console.log "youtubeKey  [#{youtubeKey}]"
-  console.log "giflayerKey [#{giflayerKey}]"
+   console.log "Example app listening at http://#{host}:#{port}"
+   console.log "youtubeKey  [#{youtubeKey}]"
+   console.log "giflayerKey [#{giflayerKey}]"
