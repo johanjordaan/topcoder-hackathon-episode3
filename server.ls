@@ -65,14 +65,17 @@ buildGLRequest = (id) ->
    url="https://www.youtube.com/watch?v=#{id}"
    start=5
    duration=10
+   size="160x100"
 
    base = "https://apilayer.net/api/capture?access_key=#{giflayerKey}"
    url_parm = "url=#{url}"
    start_parm = "start=#{start}"
    duration_parm = "duration=#{duration}"
+   size_param = "size=#{size}"
    glRequest = "#{base}&#{url_parm}&#{start_parm}&#{duration_parm}"
 
-app.post '/api/update', (req, res) ->
+app.post '/api/update/:date', (req, res) ->
+   console.log req.params.date
 
    currentDate = new Date!
    publishedAfter = new Date(null)
@@ -85,18 +88,16 @@ app.post '/api/update', (req, res) ->
    checkIfUpdateAlreadyRun!.then ->
       createFs!.then ->
          callYouTube(publishedAfterStr).then (items) ->
+            fs.write "./public/"
             items |> _.each (item) ->
                path = "./public/data/#{item.id}.gif"
                fs.exists path, (exists) ->
                   console.log exists,path
-                  if !existscd
+                  if !exists
                      #console.log "Giflayer get image [#{glRequest}]"
                      request(buildGLRequest(item.id))
                         .pipe(fs.createWriteStream(path))
-
             res.send ""
-
-   #request.get(glRequest).pipe(res)
 
 app.get '/api/load/:date', (req, res) ->
    fs.readFile "public/data/#{req.params.date}.json","UTF-8", (err, text) ->

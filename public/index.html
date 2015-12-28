@@ -17,13 +17,27 @@
 <body ng-controller="mainController">
     <div class="container">
 
-        <div class="jumbotron text-center">
-            <h1>topcoder-hackathon-episode3<span class="label label-info">??</span></h1>
+        <div class="text-center">
+            <h1>topcoder-hackathon-episode3</h1>
+            <h2>
+               <span class="controls label label-info" ng-click="backward()">
+                  <span class="glyphicon glyphicon-step-backward"></span>
+               </span>
+               <span class="controls label label-info" ng-click="">whats on youtube {{currentDate}}</span>
+               <span ng-if="atEnd">
+                  <span class="controls label label-info" ng-click="forward()">
+                     <span class="glyphicon glyphicon-step-forward"></span>
+                  </span>
+               </span>
+               <span class="controls label label-info" ng-click="reset()">
+                  <span class="glyphicon glyphicon-refresh"></span>
+               </span>
+            </h2>
         </div>
 
         <div ng-repeat="row in rows" class="row">
            <div ng-repeat="item in row" class="col-sm-4">
-             <img ng-src="{{item.src}}"/>
+             <img class="img-thumbnail" ng-src="{{item.src}}"/>
            </div>
         </div>
 
