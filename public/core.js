@@ -34,6 +34,7 @@ function mainController($scope, $http) {
    };
 
    $scope.getDates = function() {
+      $scope.currentDateIndex = -1;
       $http.get('/api/list_dates')
          .success(function(data) {
             console.log(data);
@@ -46,8 +47,7 @@ function mainController($scope, $http) {
    };
 
    $scope.reset = function() {
-      $scope.currentDateIndex = -1;
-      $scope.refresh();
+      $scope.getDates();
    }
 
    $scope.backward = function() {
