@@ -3,7 +3,6 @@ var app = angular.module('app', []);
 function mainController($scope, $http) {
    $scope.rows = [[{},{},{}],[{},{},{}],[{},{},{}]];
    $scope.dates = [];
-   $scope.atEnd = true;
    $scope.currentDateIndex = -1;
    $scope.currentDate = "";
 
@@ -11,7 +10,6 @@ function mainController($scope, $http) {
       if($scope.currentDateIndex == -1)
          if($scope.dates.length>0) {
             $scope.currentDateIndex = $scope.dates.length-1;
-            $scope.atEnd = true;
          } else {
             return;
          }

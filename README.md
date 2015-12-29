@@ -30,3 +30,4 @@ This is the tech stack used to create this entry:
 
 ## Notes
 * new Date(publishedAfterDate.getDate! +1) - Obscure error in livescript it should be + 1 not +1...
+* Had to remove pepper flash player in chrome to stop machine from crashing with 9 gifs open.

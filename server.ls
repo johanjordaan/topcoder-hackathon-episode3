@@ -28,7 +28,7 @@ app.use bodyParser.urlencoded {extended:true}
 fromYYYYMMDD = (dateString) ->
    if !dateString?
       c = new Date!
-      dateString = "#{c.getFullYear!}#{c.getMonth! - 1}#{c.getDate!}"
+      dateString = "#{c.getFullYear!}#{c.getMonth! + 1}#{c.getDate!}"
 
    date = new Date(
       Number(dateString.substring(0,4)),
@@ -118,8 +118,8 @@ update = (res, publishedAfterDate) ->
             if err?
                console.log err
                res.send "{'error':#{err}}"
-            #else
-            #   res.send ""
+            else
+               res.send ""
 
 app.post '/api/update/:date', (req, res) ->
    publishedAfterDate = fromYYYYMMDD req.params.date
