@@ -27,18 +27,17 @@
         <div class="text-center">
             <h1>topcoder-hackathon-episode3</h1>
             <h2>
-               <span class="controls label label-info" ng-click="backward()">
+               <button type="button" class="btn btn-primary" ng-class="{'disabled':atStart(),'enabled':!atStart()}" ng-click="backward()">
                   <span class="glyphicon glyphicon-step-backward"></span>
-               </span>
+               </button>
+
                <span class="controls label label-info" ng-click="">whats on youtube {{currentDate}}</span>
-               <span ng-if="atEnd">
-                  <span class="controls label label-info" ng-click="forward()">
-                     <span class="glyphicon glyphicon-step-forward"></span>
-                  </span>
-               </span>
-               <span class="controls label label-info" ng-click="reset()">
+               <button type="button" class="btn btn-primary" ng-class="{'disabled':atEnd(),'enabled':!atEnd()}" ng-click="forward()">
+                  <span class="glyphicon glyphicon-step-forward"></span>
+               </button>
+               <button type="button" class="btn btn-primary enabled" ng-click="reset()">
                   <span class="glyphicon glyphicon-refresh"></span>
-               </span>
+               </button>
             </h2>
         </div>
 

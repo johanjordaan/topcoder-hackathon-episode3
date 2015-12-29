@@ -64,5 +64,16 @@ function mainController($scope, $http) {
       $scope.refresh();
    }
 
+   $scope.atStart = function() {
+      return $scope.currentDateIndex == 0;
+   }
+
+   $scope.atEnd = function() {
+      return $scope.currentDateIndex == -1
+         || $scope.currentDateIndex == $scope.dates.length-1;
+   }
+
+
+
    $scope.getDates();
 }
