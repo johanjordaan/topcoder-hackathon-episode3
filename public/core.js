@@ -73,9 +73,15 @@ function mainController($scope, $http) {
          || $scope.currentDateIndex == $scope.dates.length-1;
    }
 
-   $scope.show_video = function(video) {
-      alert(video.description);
+   $scope.showVideo = function(video) {
+      $scope.selectedVideo = video;
+      $('#myModal').modal('show');
    }
+
+   $('#myModal').on('hidden.bs.modal', function () {
+      var src = $('#iframe').prop('src');
+      $('#iframe').prop('src','');
+   })
 
    $scope.getDates();
 }

@@ -7,13 +7,13 @@
     <title>topcoder-hackathon-episode3</title>
 
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
+
     <link rel="stylesheet" href="styles.css">
 
     <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.8/angular.min.js"></script>
-
-    <!--script src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.14.3/ui-bootstrap.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.14.3/ui-bootstrap-tpls.js"></script-->
 
     <script src="core.js"></script>
 
@@ -45,15 +45,34 @@
            <div class="col-sm-1">
            </div>
            <div ng-repeat="item in row" class="col-sm-3">
-             <img ng-click="show_video(item)" class="img-thumbnail" ng-src="{{item.src}}"/>
+             <img ng-click="showVideo(item)" class="img-thumbnail" ng-src="{{item.src}}"/>
              <p>{{item.title}}</p>
            </div>
            <div class="col-sm-1">
            </div>
         </div>
-
-
     </div>
+
+
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">{{selectedVideo.title}}</h4>
+          </div>
+          <div class="modal-body text-center" >
+            <iframe id="iframe" width="420" height="315"
+                src="http://www.youtube.com/embed/{{selectedVideo.id}}?autoplay=1">
+            </iframe>
+            <p>{{selectedVideo.description}}</p>
+          </div>
+          <div class="modal-footer">
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
 </body>
 
 
