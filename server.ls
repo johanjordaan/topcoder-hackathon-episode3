@@ -34,7 +34,7 @@ fromYYYYMMDD = (dateString) ->
       Number(dateString.substring(0,4)),
       Number(dateString.substring(4,6))-1,
       Number(dateString.substring(6,8))
-   )
+   )public/data
 
 toYYYYMMDD = (date) ->
    date.toISOString().slice(0,10).replace(/-/g,"");
@@ -66,7 +66,7 @@ buildYTRequest = (publishedAfterDate,publishedBeforeDate) ->
 
 buildGLRequest = (id) ->
    url="https://www.youtube.com/watch?v=#{id}"
-   start=5
+   start=10
    duration=10
    size="160x100"
 
@@ -138,7 +138,7 @@ app.get '/api/load/:date', (req, res) ->
       else
          res.send text
 
-# Get the list of dates for wich we have data
+# Get the list of dates for which we have data
 #
 app.get '/api/list_dates', (req, res) ->
    glob 'public/data/*.json', (err, files) ->
@@ -150,17 +150,6 @@ app.get '/api/list_dates', (req, res) ->
                path.basename(file).replace(path.extname(file),"")
             |> _.sort
             |> res.send
-
-# Create the required directories if they don't exist
-#
-fs.mkdir 'public/data', (err) ->
-   if err && err.code == 'EEXIST'
-      console.log "pub/data exists already"
-   else if !err
-      console.log "created pub/data"
-   else
-      console.log err
-
 
 server = app.listen 3000, ->
    host = server.address!.address

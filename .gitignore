@@ -28,4 +28,5 @@ node_modules
 
 # Project specific ignores
 key.ls
-public/data
+public/data/*.json
+public/data/*.gif
