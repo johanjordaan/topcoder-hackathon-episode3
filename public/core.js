@@ -73,7 +73,9 @@ function mainController($scope, $http) {
          || $scope.currentDateIndex == $scope.dates.length-1;
    }
 
-
+   $scope.show_video = function(video) {
+      alert(video.description);
+   }
 
    $scope.getDates();
 }

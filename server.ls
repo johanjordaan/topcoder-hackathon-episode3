@@ -34,7 +34,7 @@ fromYYYYMMDD = (dateString) ->
       Number(dateString.substring(0,4)),
       Number(dateString.substring(4,6))-1,
       Number(dateString.substring(6,8))
-   )public/data
+   )
 
 toYYYYMMDD = (date) ->
    date.toISOString().slice(0,10).replace(/-/g,"");
@@ -98,7 +98,7 @@ update = (res, publishedAfterDate) ->
                do
                   id: item.id.videoId
                   title: item.snippet.title
-                  description: item.snippet.descriptionn
+                  description: item.snippet.description
             |> _.each (item) ->
                path = "./public/data/#{item.id}.gif"
                fs.exists path, (exists) ->
